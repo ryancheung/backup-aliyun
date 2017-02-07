@@ -21,9 +21,9 @@ module Backup
       def client
         return @client if defined? @client
 
-        @client = Aliyun::OSS::Client.new(:endpoint => "oss-#{self.area}.aliyuncs.com",
-                                          :access_key_id => self.access_key_id,
-                                          :access_key_secret => self.access_key_secret)
+        @client = ::Aliyun::OSS::Client.new(:endpoint => "oss-#{self.area}.aliyuncs.com",
+                                            :access_key_id => self.access_key_id,
+                                            :access_key_secret => self.access_key_secret)
         @client
       end
 
