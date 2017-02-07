@@ -20,12 +20,15 @@ module Backup
 
       def client
         return @client if defined? @client
-        opts = {
-          host: "oss-#{self.area}.aliyuncs.com",
-          bucket: self.bucket
-        }
-        @client = ::Aliyun::Oss::Client.new(self.access_key_id, self.access_key_secret, opts)
+
+        @client = Aliyun::OSS::Client.new(:endpoint => "oss-#{self.area}.aliyuncs.com",
+                                          :access_key_id => self.access_key_id,
+                                          :access_key_secret => self.access_key_secret)
         @client
+      end
+
+      def _aliyun_bucket
+        client.get_bucket(self.bucket)
       end
 
       def transfer!
@@ -36,7 +39,7 @@ module Backup
           dest = File.join(remote_path, filename)
           Logger.info "#{storage_name} uploading '#{ dest }'..."
           File.open(src, 'r') do |file|
-            client.bucket_create_object(dest, file, {})
+            _aliyun_bucket.put_object(dest, :file => file})
           end
         end
       end
@@ -44,7 +47,7 @@ module Backup
       def remove!(package)
         remote_path = remote_path_for(package)
         Logger.info "#{storage_name} removing '#{remote_path}'..."
-        client.bucket_delete_object(remote_path)
+        _aliyun_bucket.delete_object(remote_path)
       end
     end
   end
