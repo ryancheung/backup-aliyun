@@ -39,7 +39,7 @@ module Backup
           dest = File.join(remote_path, filename)
           Logger.info "#{storage_name} uploading '#{ dest }'..."
           File.open(src, 'r') do |file|
-            _aliyun_bucket.put_object(dest, :file => file})
+            _aliyun_bucket.put_object(dest, :file => file)
           end
         end
       end
